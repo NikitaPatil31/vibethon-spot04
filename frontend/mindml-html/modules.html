@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Modules - MindML</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f3f4f6; min-height: 100vh; }
+
+        .navbar { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.3rem; }
+        .logo-text { font-size: 1.3rem; font-weight: bold; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #4b5563; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #667eea; }
+        .nav-right { display: flex; align-items: center; gap: 1rem; }
+        .pts { background: #fef3c7; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; color: #d97706; }
+        .avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        .page-header { text-align: center; margin-bottom: 2rem; }
+        .page-header h1 { font-size: 2rem; color: #1f2937; margin-bottom: 0.5rem; }
+        .page-header p { color: #6b7280; }
+
+        .level-tabs { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .level-tab { padding: 0.75rem 2rem; border: none; border-radius: 30px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; background: white; color: #6b7280; }
+        .level-tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .level-tab:hover { transform: translateY(-2px); }
+
+        .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .module-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.07); transition: all 0.3s; cursor: pointer; }
+        .module-card:hover { transform: translateY(-5px); box-shadow: 0 20px 30px rgba(0,0,0,0.1); }
+        .module-header { padding: 1.5rem; color: white; }
+        .module-header.beginner { background: linear-gradient(135deg, #10b981, #34d399); }
+        .module-header.intermediate { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+        .module-header.advanced { background: linear-gradient(135deg, #ef4444, #f87171); }
+        .module-level { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+        .module-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .module-meta { display: flex; gap: 1rem; font-size: 0.75rem; opacity: 0.9; }
+        .module-body { padding: 1.5rem; }
+        .module-description { color: #6b7280; font-size: 0.875rem; line-height: 1.5; margin-bottom: 1rem; }
+        .progress-bar { height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; margin: 1rem 0; }
+        .progress-fill { height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 3px; transition: width 0.3s; }
+        .continue-btn { width: 100%; padding: 0.75rem; background: #f3f4f6; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .continue-btn:hover { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+
+        .lesson-content { background: white; border-radius: 20px; padding: 2rem; margin-top: 2rem; display: none; }
+        .lesson-content.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .lesson-title { font-size: 1.8rem; color: #1f2937; margin-bottom: 0.5rem; }
+        .lesson-video { background: #1e1e2e; border-radius: 16px; padding: 2rem; text-align: center; margin: 1rem 0; color: white; }
+        .lesson-content-text { line-height: 1.8; color: #374151; }
+        .lesson-content-text h3 { color: #667eea; margin: 1rem 0 0.5rem; }
+        .lesson-content-text p { margin-bottom: 1rem; }
+        .lesson-content-text ul { margin-left: 2rem; margin-bottom: 1rem; }
+        .lesson-content-text li { margin-bottom: 0.5rem; }
+
+        .quiz-btn { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .quiz-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+        .quiz-modal.active { display: flex; }
+        .quiz-container { background: white; border-radius: 24px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; padding: 2rem; }
+        .quiz-option { padding: 0.75rem; margin: 0.5rem 0; border: 2px solid #e5e7eb; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
+        .quiz-option:hover { border-color: #667eea; background: #f9fafb; }
+        .quiz-option.selected { border-color: #667eea; background: linear-gradient(135deg, #667eea10, #764ba210); }
+        .quiz-nav { display: flex; justify-content: space-between; margin-top: 1rem; }
+        .close-modal { background: #ef4444; margin-top: 1rem; width: 100%; }
+
+        @media (max-width: 768px) { .nav-links { display: none; } .modules-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="location.href='dashboard.html'">
+                <div class="logo-icon">M</div>
+                <span class="logo-text">MindML</span>
+            </div>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="modules.html" class="active">Modules</a>
+                <a href="code.html">Code</a>
+                <a href="games.html">Games</a>
+                <a href="leaderboard.html">Leaderboard</a>
+            </div>
+            <div class="nav-right">
+                <span class="pts">⚡ <span id="pointsDisplay">0</span> pts</span>
+                <div class="avatar">N</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>📚 Structured Learning Modules</h1>
+            <p>Choose your path and master AI & Machine Learning concepts</p>
+        </div>
+
+        <div class="level-tabs">
+            <button class="level-tab active" onclick="filterLevel('all')">All</button>
+            <button class="level-tab" onclick="filterLevel('beginner')">🌱 Beginner</button>
+            <button class="level-tab" onclick="filterLevel('intermediate')">🚀 Intermediate</button>
+            <button class="level-tab" onclick="filterLevel('advanced')">🏆 Advanced</button>
+        </div>
+
+        <div class="modules-grid" id="modulesGrid"></div>
+        <div id="lessonContent" class="lesson-content"></div>
+    </div>
+
+    <div id="quizModal" class="quiz-modal">
+        <div class="quiz-container" id="quizContainer"></div>
+    </div>
+
+    <script>
+        // REAL Lesson Content for each lesson
+        const lessonContents = {
+            // Module 1: What is Machine Learning?
+            "1_0": { title: "Introduction to AI vs ML", content: `
+                <h3>🤖 What is Artificial Intelligence (AI)?</h3>
+                <p>Artificial Intelligence is the broad field of creating machines that can perform tasks that typically require human intelligence. This includes reasoning, learning, perception, and problem-solving.</p>
+                
+                <h3>💡 What is Machine Learning (ML)?</h3>
+                <p>Machine Learning is a subset of AI that gives computers the ability to learn from data without being explicitly programmed. Instead of writing rules, we feed data to algorithms that learn patterns.</p>
+                
+                <h3>📊 Key Difference:</h3>
+                <ul>
+                    <li><strong>Traditional Programming:</strong> Data + Rules → Output</li>
+                    <li><strong>Machine Learning:</strong> Data + Output → Rules (Patterns)</li>
+                </ul>
+                
+                <h3>🎯 Real-World Example:</h3>
+                <p>Instead of programming a spam filter with rules like "if email contains 'FREE' then mark as spam", we show ML thousands of spam/non-spam emails and it learns the patterns itself!</p>
+            `, videoUrl: "https://www.youtube.com/embed/ukzFI9rgwfU" },
+            "1_1": { title: "History of Machine Learning", content: `
+                <h3>📜 Timeline of ML Development</h3>
+                <ul>
+                    <li><strong>1950s:</strong> Alan Turing creates the Turing Test</li>
+                    <li><strong>1957:</strong> Frank Rosenblatt invents the Perceptron (first neural network)</li>
+                    <li><strong>1990s:</strong> Support Vector Machines become popular</li>
+                    <li><strong>2012:</strong> Deep Learning revolution with AlexNet</li>
+                    <li><strong>2020s:</strong> Generative AI (ChatGPT, DALL-E, Midjourney)</li>
+                </ul>
+                <h3>🏆 Key Milestone:</h3>
+                <p>In 1997, IBM's Deep Blue beat world chess champion Garry Kasparov. In 2016, Google's AlphaGo beat Lee Sedol at Go - a game far more complex than chess!</p>
+            `, videoUrl: "https://www.youtube.com/embed/6S0g8WFF9D8" },
+            "1_2": { title: "Types of Machine Learning", content: `
+                <h3>📚 Three Main Types of ML</h3>
+                
+                <h3>1️⃣ Supervised Learning</h3>
+                <p>Learning with labeled data (has answers). Like a student learning with a teacher!</p>
+                <ul>
+                    <li><strong>Examples:</strong> Spam detection, house price prediction, image classification</li>
+                    <li><strong>Algorithms:</strong> Linear Regression, Decision Trees, Neural Networks</li>
+                </ul>
+                
+                <h3>2️⃣ Unsupervised Learning</h3>
+                <p>Finding patterns in unlabeled data (no answers). Like organizing a messy room!</p>
+                <ul>
+                    <li><strong>Examples:</strong> Customer segmentation, anomaly detection</li>
+                    <li><strong>Algorithms:</strong> K-Means Clustering, PCA</li>
+                </ul>
+                
+                <h3>3️⃣ Reinforcement Learning</h3>
+                <p>Learning through trial and error with rewards/punishments. Like training a dog!</p>
+                <ul>
+                    <li><strong>Examples:</strong> Game AI (AlphaGo), robotics, self-driving cars</li>
+                </ul>
+            `, videoUrl: "https://www.youtube.com/embed/9f-GarcDY58" },
+            "1_3": { title: "Real-world Applications", content: `
+                <h3>🌍 Where ML is Used Today</h3>
+                <ul>
+                    <li><strong>📧 Email:</strong> Spam filtering, smart replies</li>
+                    <li><strong>🎬 Netflix/YouTube:</strong> Recommendation systems ("Because you watched...")</li>
+                    <li><strong>🗣️ Voice Assistants:</strong> Siri, Alexa, Google Assistant</li>
+                    <li><strong>🚗 Self-driving Cars:</strong> Tesla, Waymo</li>
+                    <li><strong>🏥 Healthcare:</strong> Disease diagnosis from X-rays, drug discovery</li>
+                    <li><strong>💰 Finance:</strong> Fraud detection, stock market prediction</li>
+                    <li><strong>🖼️ Social Media:</strong> Face recognition, content moderation</li>
+                </ul>
+                <h3>🎯 Fun Fact:</h3>
+                <p>Every time you search Google, shop on Amazon, or watch Netflix, ML is working behind the scenes!</p>
+            `, videoUrl: "https://www.youtube.com/embed/R9OHn5ZF4Uo" },
+
+            // Module 2: Supervised Learning
+            "2_0": { title: "What is Supervised Learning?", content: `
+                <h3>📚 Supervised Learning Explained</h3>
+                <p>Supervised learning is like learning with a teacher. We give the algorithm input-output pairs (labeled data), and it learns to map inputs to outputs.</p>
+                
+                <h3>🎯 Simple Analogy:</h3>
+                <p>Teaching a child to identify fruits: You show an apple and say "This is an apple". Show an orange and say "This is an orange". After many examples, the child learns to identify fruits on their own!</p>
+                
+                <h3>📊 Mathematical View:</h3>
+                <p>Given input X and output Y, we want to learn a function f where f(X) = Y</p>
+                <ul>
+                    <li>X = Features (input)</li>
+                    <li>Y = Labels (output)</li>
+                    <li>f = The learned model</li>
+                </ul>
+            `, videoUrl: "https://www.youtube.com/embed/Qg8_XZ5kY_Y" },
+            "2_1": { title: "Regression Explained", content: `
+                <h3>📈 Regression: Predicting Numbers</h3>
+                <p>Regression predicts <strong>continuous values</strong> (numbers). The output is a real number like price, temperature, or age.</p>
+                
+                <h3>🎯 Examples:</h3>
+                <ul>
+                    <li>🏠 <strong>House Price Prediction:</strong> Based on size, location, bedrooms → Price in dollars</li>
+                    <li>🌡️ <strong>Temperature Forecast:</strong> Based on humidity, wind, pressure → Temperature in degrees</li>
+                    <li>📊 <strong>Stock Market:</strong> Based on historical data → Future stock price</li>
+                </ul>
+                
+                <h3>📐 Simple Linear Regression Formula:</h3>
+                <p>y = mx + b</p>
+                <ul>
+                    <li>y = predicted value (output)</li>
+                    <li>x = input feature</li>
+                    <li>m = slope (how much y changes when x changes)</li>
+                    <li>b = intercept (value when x = 0)</li>
+                </ul>
+            `, videoUrl: "https://www.youtube.com/embed/CtKeHnfK5uA" },
+            "2_2": { title: "Classification Explained", content: `
+                <h3>📊 Classification: Predicting Categories</h3>
+                <p>Classification predicts <strong>discrete categories</strong> (classes). The output is a label like "spam/not spam" or "cat/dog".</p>
+                
+                <h3>🎯 Examples:</h3>
+                <ul>
+                    <li>📧 <strong>Email Spam Detection:</strong> Spam or Not Spam</li>
+                    <li>🖼️ <strong>Image Recognition:</strong> Cat, Dog, Bird, etc.</li>
+                    <li>💳 <strong>Fraud Detection:</strong> Fraudulent or Legitimate</li>
+                    <li>🩺 <strong>Medical Diagnosis:</strong> Disease or Healthy</li>
+                </ul>
+                
+                <h3>⚖️ Binary vs Multi-class Classification:</h3>
+                <ul>
+                    <li><strong>Binary:</strong> 2 categories (Yes/No, True/False)</li>
+                    <li><strong>Multi-class:</strong> 3+ categories (Dog, Cat, Bird, Fish)</li>
+                </ul>
+            `, videoUrl: "https://www.youtube.com/embed/Hj0F51PjM4w" }
+        };
+
+        let currentFilter = "all";
+        let currentModule = null;
+        let currentLessonIndex = null;
+
+        const modules = [
+            {
+                id: 1,
+                title: "What is Machine Learning?",
+                level: "beginner",
+                levelName: "Beginner",
+                duration: "2h",
+                lessons: [
+                    { name: "Introduction to AI vs ML", duration: "15 min", video: true, completed: false, contentKey: "1_0" },
+                    { name: "History of Machine Learning", duration: "20 min", video: true, completed: false, contentKey: "1_1" },
+                    { name: "Types of Machine Learning", duration: "25 min", video: true, completed: false, contentKey: "1_2" },
+                    { name: "Real-world Applications", duration: "20 min", video: false, completed: false, contentKey: "1_3" }
+                ],
+                progress: 0,
+                quizTaken: false,
+                quizScore: 0,
+                description: "Learn the basics of ML, types of learning, and real-world applications.",
+                quiz: {
+                    questions: [
+                        { text: "What is Machine Learning?", options: ["Programming rules manually", "Computers learning from data", "Building hardware", "Creating databases"], correct: 1, points: 10 },
+                        { text: "Which type of learning uses labeled data?", options: ["Unsupervised", "Reinforcement", "Supervised", "Deep Learning"], correct: 2, points: 10 },
+                        { text: "What does 'training' mean in ML?", options: ["Running the program", "Learning patterns from data", "Testing the model", "Deleting data"], correct: 1, points: 10 }
+                    ]
+                }
+            },
+            {
+                id: 2,
+                title: "Supervised Learning",
+                level: "beginner",
+                levelName: "Beginner",
+                duration: "3h",
+                lessons: [
+                    { name: "What is Supervised Learning?", duration: "20 min", video: true, completed: false, contentKey: "2_0" },
+                    { name: "Regression Explained", duration: "25 min", video: true, completed: false, contentKey: "2_1" },
+                    { name: "Classification Explained", duration: "25 min", video: true, completed: false, contentKey: "2_2" },
+                    { name: "Real Examples: Spam Detection", duration: "20 min", video: false, completed: false, contentKey: "2_3" },
+                    { name: "Practice Exercise", duration: "30 min", video: false, completed: false, contentKey: "2_4" }
+                ],
+                progress: 0,
+                quizTaken: false,
+                quizScore: 0,
+                description: "Understand regression and classification with real examples.",
+                quiz: {
+                    questions: [
+                        { text: "Which is a regression problem?", options: ["Spam detection", "House price prediction", "Image classification", "Sentiment analysis"], correct: 1, points: 10 },
+                        { text: "What does classification predict?", options: ["Continuous numbers", "Categories", "Text only", "Images only"], correct: 1, points: 10 },
+                        { text: "Which algorithm is used for classification?", options: ["Linear Regression", "Logistic Regression", "K-Means", "PCA"], correct: 1, points: 10 }
+                    ]
+                }
+            }
+        ];
+
+        function loadSavedProgress() {
+            const saved = localStorage.getItem('moduleProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                modules.forEach(module => {
+                    if (progress[module.id]) {
+                        module.progress = progress[module.id].progress;
+                        module.quizTaken = progress[module.id].quizTaken;
+                        module.quizScore = progress[module.id].quizScore;
+                        if (progress[module.id].lessons) {
+                            module.lessons.forEach((lesson, idx) => {
+                                lesson.completed = progress[module.id].lessons[idx] || false;
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        function saveProgress() {
+            const progress = {};
+            modules.forEach(module => {
+                progress[module.id] = {
+                    progress: module.progress,
+                    quizTaken: module.quizTaken || false,
+                    quizScore: module.quizScore || 0,
+                    lessons: module.lessons.map(l => l.completed)
+                };
+            });
+            localStorage.setItem('moduleProgress', JSON.stringify(progress));
+        }
+
+        function renderModules() {
+            const grid = document.getElementById('modulesGrid');
+            const filtered = currentFilter === "all" ? modules : modules.filter(m => m.level === currentFilter);
+            
+            grid.innerHTML = filtered.map(module => {
+                const completedLessons = module.lessons.filter(l => l.completed).length;
+                const progressPercent = (completedLessons / module.lessons.length) * 100;
+                module.progress = progressPercent;
+                
+                return `
+                <div class="module-card" onclick="openModule(${module.id})">
+                    <div class="module-header ${module.level}">
+                        <div class="module-level">${module.levelName}</div>
+                        <div class="module-title">${module.title}</div>
+                        <div class="module-meta">
+                            <span><i class="far fa-clock"></i> ${module.duration}</span>
+                            <span><i class="fas fa-video"></i> ${module.lessons.length} lessons</span>
+                        </div>
+                    </div>
+                    <div class="module-body">
+                        <div class="module-description">${module.description}</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${module.progress}%"></div>
+                        </div>
+                        <button class="continue-btn">${module.progress > 0 ? 'Continue Learning →' : 'Start Learning →'}</button>
+                    </div>
+                </div>`;
+            }).join('');
+            saveProgress();
+        }
+
+        function filterLevel(level) {
+            currentFilter = level;
+            document.querySelectorAll('.level-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            renderModules();
+        }
+
+        function openLesson(moduleId, lessonIndex) {
+            const module = modules.find(m => m.id === moduleId);
+            const lesson = module.lessons[lessonIndex];
+            const content = lessonContents[lesson.contentKey];
+            
+            if (!content) {
+                showToast("Content loading...");
+                return;
+            }
+            
+            const contentDiv = document.getElementById('lessonContent');
+            
+            contentDiv.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <button class="continue-btn" style="width: auto; padding: 0.5rem 1rem;" onclick="openModule(${moduleId})">
+                        ← Back to Lessons
+                    </button>
+                    ${!lesson.completed ? `<button class="continue-btn" style="width: auto; padding: 0.5rem 1rem; background: #10b981; color: white;" onclick="markLessonComplete(${moduleId}, ${lessonIndex})">
+                        ✓ Mark as Complete (+10 points)
+                    </button>` : '<span style="color: #10b981;">✓ Completed</span>'}
+                </div>
+                <div class="lesson-title">${lesson.name}</div>
+                ${lesson.video ? `
+                <div class="lesson-video">
+                    <i class="fas fa-play-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p>📺 Video Lesson Available</p>
+                    <p style="font-size: 0.875rem;">Watch the video to understand the concept better!</p>
+                    <button class="quiz-btn" onclick="window.open('${content.videoUrl}', '_blank')" style="margin-top: 1rem;">
+                        <i class="fab fa-youtube"></i> Watch on YouTube
+                    </button>
+                </div>
+                ` : ''}
+                <div class="lesson-content-text">
+                    ${content.content}
+                </div>
+            `;
+            
+            contentDiv.classList.add('active');
+            contentDiv.scrollIntoView({ behavior: 'smooth' });
+            currentModule = moduleId;
+            currentLessonIndex = lessonIndex;
+        }
+
+        function openModule(moduleId) {
+            const module = modules.find(m => m.id === moduleId);
+            const contentDiv = document.getElementById('lessonContent');
+            
+            const lessonsHtml = module.lessons.map((lesson, idx) => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #e5e7eb;">
+                    <div style="flex: 1; cursor: pointer;" onclick="openLesson(${moduleId}, ${idx})">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas ${lesson.video ? 'fa-video' : 'fa-book'}" style="color: #667eea;"></i>
+                            <div>
+                                <strong>${lesson.name}</strong>
+                                <div style="font-size: 0.75rem; color: #6b7280;">${lesson.duration}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        ${lesson.completed ? 
+                            '<span style="color: #10b981;"><i class="fas fa-check-circle"></i> Completed</span>' : 
+                            `<button class="continue-btn" style="width: auto; padding: 0.25rem 1rem;" onclick="markLessonComplete(${moduleId}, ${idx})">Mark Complete</button>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+            
+            const quizStatus = module.quizTaken ? 
+                `<div style="background: #d1fae5; padding: 1rem; border-radius: 12px; margin-top: 1rem;">
+                    <i class="fas fa-check-circle"></i> Quiz Completed! Score: ${module.quizScore}/30 points
+                 </div>` :
+                `<button class="quiz-btn" onclick="startQuiz(${moduleId})">
+                    <i class="fas fa-question-circle"></i> Take Quiz & Earn Points
+                </button>`;
+            
+            contentDiv.innerHTML = `
+                <div class="lesson-title">${module.title}</div>
+                <div class="explanation-box" style="background: #f9fafb; border-radius: 16px; padding: 1.5rem;">
+                    <h3>📖 Lessons (${module.lessons.length})</h3>
+                    ${lessonsHtml}
+                </div>
+                <div class="visual-aid" style="background: linear-gradient(135deg, #667eea10, #764ba210); border-radius: 16px; padding: 1.5rem; text-align: center;">
+                    <h3>📊 Your Progress</h3>
+                    <div class="progress-bar" style="height: 20px;">
+                        <div class="progress-fill" style="width: ${module.progress}%"></div>
+                    </div>
+                    <p style="margin-top: 1rem;">${Math.round(module.progress)}% Complete (${module.lessons.filter(l => l.completed).length}/${module.lessons.length} lessons)</p>
+                </div>
+                ${quizStatus}
+            `;
+            
+            contentDiv.classList.add('active');
+            contentDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function markLessonComplete(moduleId, lessonIndex) {
+            const module = modules.find(m => m.id === moduleId);
+            if (module.lessons[lessonIndex].completed) return;
+            
+            module.lessons[lessonIndex].completed = true;
+            
+            const completedCount = module.lessons.filter(l => l.completed).length;
+            module.progress = (completedCount / module.lessons.length) * 100;
+            
+            saveProgress();
+            
+            // Add points for completing lesson
+            let points = parseInt(localStorage.getItem('mindml_points') || 0);
+            points += 10;
+            localStorage.setItem('mindml_points', points);
+            document.getElementById('pointsDisplay').textContent = points;
+            
+            showToast(`✅ +10 points! "${module.lessons[lessonIndex].name}" completed!`);
+            
+            // Refresh the view
+            if (currentLessonIndex !== null && currentModule === moduleId) {
+                openLesson(moduleId, lessonIndex);
+            } else {
+                openModule(moduleId);
+            }
+        }
+
+        let currentQuiz = null;
+        let currentQuizAnswers = {};
+        let currentQuizModuleId = null;
+        let currentQuestionIndex = 0;
+
+        function startQuiz(moduleId) {
+            const module = modules.find(m => m.id === moduleId);
+            currentQuiz = module.quiz;
+            currentQuizModuleId = moduleId;
+            currentQuizAnswers = {};
+            currentQuestionIndex = 0;
+            
+            renderQuizQuestion();
+            document.getElementById('quizModal').classList.add('active');
+        }
+
+        function renderQuizQuestion() {
+            const container = document.getElementById('quizContainer');
+            const question = currentQuiz.questions[currentQuestionIndex];
+            
+            container.innerHTML = `
+                <h3>📝 Quiz: ${modules.find(m => m.id === currentQuizModuleId).title}</h3>
+                <p style="color: #6b7280; margin-bottom: 1rem;">Question ${currentQuestionIndex + 1} of ${currentQuiz.questions.length} (10 points each)</p>
+                <div class="quiz-question">
+                    <strong style="font-size: 1.1rem;">${question.text}</strong>
+                    ${question.options.map((opt, optIdx) => `
+                        <div class="quiz-option ${currentQuizAnswers[currentQuestionIndex] === optIdx ? 'selected' : ''}" onclick="selectQuizAnswer(${optIdx})">
+                            ${String.fromCharCode(65+optIdx)}. ${opt}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="quiz-nav">
+                    <button class="quiz-btn" onclick="previousQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>← Previous</button>
+                    ${currentQuestionIndex === currentQuiz.questions.length - 1 ? 
+                        `<button class="quiz-btn" onclick="submitQuiz()">Submit Quiz ✓</button>` :
+                        `<button class="quiz-btn" onclick="nextQuestion()">Next →</button>`
+                    }
+                </div>
+                <button class="quiz-btn close-modal" onclick="closeQuiz()">Close</button>
+            `;
+        }
+
+        function selectQuizAnswer(optionIndex) {
+            currentQuizAnswers[currentQuestionIndex] = optionIndex;
+            renderQuizQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuiz.questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuizQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuizQuestion();
+            }
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            currentQuiz.questions.forEach((q, idx) => {
+                if (currentQuizAnswers[idx] === q.correct) {
+                    score += q.points;
+                }
+            });
+            
+            const module = modules.find(m => m.id === currentQuizModuleId);
+            module.quizTaken = true;
+            module.quizScore = score;
+            
+            let totalPoints = parseInt(localStorage.getItem('mindml_points') || 0);
+            totalPoints += score;
+            localStorage.setItem('mindml_points', totalPoints);
+            document.getElementById('pointsDisplay').textContent = totalPoints;
+            
+            saveProgress();
+            
+            document.getElementById('quizContainer').innerHTML = `
+                <h3>🎉 Quiz Results</h3>
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; font-weight: bold; color: #667eea;">${score}/${currentQuiz.questions.length * 10}</div>
+                    <p style="margin: 1rem 0;">You earned ${score} points!</p>
+                    ${score === currentQuiz.questions.length * 10 ? '<p>🏆 Perfect Score! Amazing job!</p>' : '<p>📚 Review the lessons and try again to improve!</p>'}
+                    <button class="quiz-btn" onclick="closeQuiz

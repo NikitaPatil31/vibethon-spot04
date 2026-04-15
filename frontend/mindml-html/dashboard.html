@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - MindML</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- 🔥 NAVBAR -->
+<nav>
+  <span class="logo" onclick="goTo('dashboard')">MindML</span>
+
+  <div class="nav-links">
+    <button class="nav-link active" onclick="goTo('dashboard')">Dashboard</button>
+    <button class="nav-link" onclick="goTo('modules')">Modules</button>
+    <button class="nav-link" onclick="goTo('code')">Code</button>
+    <button class="nav-link" onclick="goTo('quiz')">Quizzes</button>
+    <button class="nav-link" onclick="goTo('game')">Games</button>
+    <button class="nav-link" onclick="goTo('leaderboard')">Leaderboard</button>
+  </div>
+
+  <div class="nav-right">
+    <span class="pts">⚡ 350 pts</span>
+    <div class="avatar" onclick="goTo('profile')">N</div>
+  </div>
+</nav>
+
+<!-- 🔥 DASHBOARD CONTENT -->
+<div class="dash-grid">
+
+  <!-- LEFT SIDE -->
+  <div>
+
+    <!-- Welcome -->
+    <div style="margin-bottom:20px">
+      <h1 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px">
+        Welcome back, Nikita! 👋
+      </h1>
+      <p style="color:var(--muted);font-size:14px">
+        Continue your AI & ML journey today
+      </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Points</div>
+        <div class="stat-val" style="color:var(--amber)">350</div>
+        <div class="stat-sub">+50 today</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Current Streak</div>
+        <div class="stat-val" style="color:var(--brand2)">🔥 3</div>
+        <div class="stat-sub">days</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Modules Done</div>
+        <div class="stat-val" style="color:var(--accent)">3/5</div>
+        <div class="stat-sub">60% complete</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Quiz Score</div>
+        <div class="stat-val" style="color:var(--green)">78%</div>
+        <div class="stat-sub">avg score</div>
+      </div>
+    </div>
+
+    <!-- Learning Path -->
+    <div class="section-title">Your Learning Path</div>
+
+    <!-- Module 1 -->
+    <div class="module-card" onclick="goTo('modules')">
+      <div class="module-header">
+        <div class="module-icon" style="background:rgba(16,185,129,0.15)">📊</div>
+        <div class="module-info">
+          <div class="module-name">
+            Supervised Learning Fundamentals
+            <span class="badge badge-green">Beginner</span>
+          </div>
+          <div class="module-meta">8h · 5 lessons</div>
+        </div>
+        <span style="color:var(--green);font-size:18px">✓</span>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:100%"></div>
+      </div>
+      <div class="progress-text">Complete</div>
+    </div>
+
+    <!-- Module 2 -->
+    <div class="module-card" onclick="goTo('modules')">
+      <div class="module-header">
+        <div class="module-icon" style="background:rgba(124,58,237,0.15)">🧠</div>
+        <div class="module-info">
+          <div class="module-name">
+            Neural Networks & Deep Learning
+            <span class="badge badge-amber">Intermediate</span>
+          </div>
+          <div class="module-meta">12h · 5 lessons</div>
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:45%"></div>
+      </div>
+      <div class="progress-text">45%</div>
+    </div>
+
+    <!-- Module 3 -->
+    <div class="module-card" onclick="goTo('modules')">
+      <div class="module-header">
+        <div class="module-icon" style="background:rgba(6,182,212,0.15)">💬</div>
+        <div class="module-info">
+          <div class="module-name">
+            Natural Language Processing
+            <span class="badge badge-amber">Intermediate</span>
+          </div>
+          <div class="module-meta">10h · 5 lessons</div>
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:20%"></div>
+      </div>
+      <div class="progress-text">20%</div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDE -->
+  <div>
+
+    <!-- Streak -->
+    <div class="sidebar-card">
+      <div class="section-title">🔥 Streak</div>
+
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <div class="streak-num">3</div>
+        <div style="color:var(--muted);font-size:13px">days in a row</div>
+      </div>
+    </div>
+
+    <!-- Achievements -->
+    <div class="sidebar-card">
+      <div class="section-title">🏆 Achievements</div>
+
+      <div class="achv-item">
+        <div class="achv-icon">🎯</div>
+        <div>
+          <div class="achv-name">First Step</div>
+          <div class="achv-desc">Completed first lesson</div>
+        </div>
+      </div>
+
+      <div class="achv-item">
+        <div class="achv-icon">📝</div>
+        <div>
+          <div class="achv-name">Quiz Master</div>
+          <div class="achv-desc">Complete 5 quizzes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Challenge -->
+    <div class="sidebar-card">
+      <div class="section-title">⚡ Daily Challenge</div>
+
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">
+        Complete a coding challenge today!
+      </div>
+
+      <button class="daily-btn" onclick="goTo('code')">
+        Start Challenge →
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

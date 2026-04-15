@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzes - MindML</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #667eea;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pts {
+            background: #fef3c7;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #d97706;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Quiz Header */
+        .quiz-header {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-header h1 {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .stat-badge {
+            background: #f3f4f6;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* Module Selector */
+        .module-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .module-btn {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .module-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .module-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Quiz Card */
+        .quiz-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .quiz-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-counter {
+            color: #6b7280;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Options */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea10, #764ba210);
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .option.wrong {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .option-letter {
+            width: 30px;
+            height: 30px;
+            background: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Code Editor */
+        .code-editor {
+            background: #1e1e2e;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .code-editor pre {
+            color: #10b981;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            background: #1e1e2e;
+            color: #10b981;
+            border: none;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            border-radius: 12px;
+        }
+
+        /* Navigation Buttons */
+        .quiz-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Feedback */
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .feedback.wrong {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        /* Results */
+        .results-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            display: none;
+        }
+
+        .results-card.show {
+            display: block;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1rem;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .restart-btn {
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .quiz-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="location.href='dashboard.html'">
+                <div class="logo-icon">M</div>
+                <span class="logo-text">MindML</span>
+            </div>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="modules.html">Modules</a>
+                <a href="code.html">Code</a>
+                <a href="games.html">Games</a>
+                <a href="quiz.html" class="active">Quizzes</a>
+                <a href="leaderboard.html">Leaderboard</a>
+            </div>
+            <div class="nav-right">
+                <span class="pts">⚡ <span id="pointsDisplay">350</span> pts</span>
+                <div class="avatar">N</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="quiz-header">
+            <h1><i class="fas fa-question-circle"></i> Quiz & Assessment</h1>
+            <p>Test your knowledge and earn points!</p>
+            <div class="quiz-stats">
+                <span class="stat-badge"><i class="fas fa-trophy"></i> Total Points: <span id="totalPoints">0</span></span>
+                <span class="stat-badge"><i class="fas fa-check-circle"></i> Quizzes Passed: <span id="quizzesPassed">0</span></span>
+            </div>
+        </div>
+
+        <div class="module-selector" id="moduleSelector"></div>
+
+        <div id="quizContainer"></div>
+        <div id="resultsContainer" class="results-card"></div>
+    </div>
+
+    <script>
+        // Quiz Data for each module
+        const quizzes = {
+            module1: {
+                name: "ML Basics",
+                questions: [
+                    {
+                        type: "mcq",
+                        text: "What is Machine Learning?",
+                        options: [
+                            "A) Programming rules manually",
+                            "B) Computers learning from data without explicit programming",
+                            "C) Building hardware components",
+                            "D) Creating databases"
+                        ],
+                        correct: 1,
+                        explanation: "Machine Learning allows computers to learn patterns from data automatically!"
+                    },
+                    {
+                        type: "mcq",
+                        text: "Which type of learning uses labeled data?",
+                        options: [
+                            "A) Unsupervised Learning",
+                            "B) Reinforcement Learning",
+                            "C) Supervised Learning",
+                            "D) Deep Learning"
+                        ],
+                        correct: 2,
+                        explanation: "Supervised learning uses labeled examples (input-output pairs) to train models."
+                    },
+                    {
+                        type: "code",
+                        text: "Complete this Python code to load a dataset:",
+                        code: `import pandas as pd\n\n# Load the dataset\ndf = pd.___('data.csv')\n\nprint(df.head())`,
+                        blanks: ["read_csv"],
+                        correct: "read_csv",
+                        explanation: "The correct function is read_csv() to load CSV files in pandas."
+                    }
+                ],
+                passingScore: 70
+            },
+            module2: {
+                name: "Supervised Learning",
+                questions: [
+                    {
+                        type: "mcq",
+                        text: "Which of these is a regression problem?",
+                        options: [
+                            "A) Identifying spam emails",
+                            "B) Predicting house prices",
+                            "C) Classifying images of cats and dogs",
+                            "D) Sorting customer reviews"
+                        ],
+                        correct: 1,
+                        explanation: "Predicting house prices is regression because it predicts a continuous value."
+                    },
+                    {
+                        type: "mcq",
+                        text: "What is the difference between classification and regression?",
+                        options: [
+                            "A) Classification predicts numbers, regression predicts categories",
+                            "B) Classification predicts categories, regression predicts numbers",
+                            "C) They are the same thing",
+                            "D) Classification is for images only"
+                        ],
+                        correct: 1,
+                        explanation: "Classification predicts discrete categories (spam/not spam), regression predicts continuous numbers (price)."
+                    },
+                    {
+                        type: "code",
+                        text: "Complete the code to train a linear regression model:",
+                        code: `from sklearn.linear_model import LinearRegression\n\nmodel = LinearRegression()\nmodel.___(X_train, y_train)\n\npredictions = model.predict(X_test)`,
+                        blanks: ["fit"],
+                        correct: "fit",
+                        explanation: "The fit() method trains the model on training data."
+                    }
+                ],
+                passingScore: 70
+            },
+            module3: {
+                name: "Decision Trees",
+                questions: [
+                    {
+                        type: "mcq",
+                        text: "What does Gini impurity measure?",
+                        options: [
+                            "A) Tree height",
+                            "B) Purity of a split (lower is better)",
+                            "C) Number of leaves",
+                            "D) Training time"
+                        ],
+                        correct: 1,
+                        explanation: "Gini impurity measures how mixed the data is. Lower values mean purer splits!"
+                    },
+                    {
+                        type: "mcq",
+                        text: "What happens if a decision tree is too deep?",
+                        options: [
+                            "A) Better accuracy always",
+                            "B) Overfitting to training data",
+                            "C) Faster training",
+                            "D) Simpler model"
+                        ],
+                        correct: 1,
+                        explanation: "Very deep trees memorize training data (overfitting) and perform poorly on new data."
+                    },
+                    {
+                        type: "code",
+                        text: "Complete this decision tree code:",
+                        code: `from sklearn.tree import DecisionTreeClassifier\n\nmodel = DecisionTreeClassifier(max_depth=___)\nmodel.fit(X_train, y_train)`,
+                        blanks: ["3"],
+                        correct: "3",
+                        explanation: "max_depth limits tree depth to prevent overfitting. 3 is a good starting value."
+                    }
+                ],
+                passingScore: 70
+            },
+            module4: {
+                name: "Neural Networks",
+                questions: [
+                    {
+                        type: "mcq",
+                        text: "What is an activation function?",
+                        options: [
+                            "A) Turns on the computer",
+                            "B) Adds non-linearity to neural networks",
+                            "C) Saves the model",
+                            "D) Loads data"
+                        ],
+                        correct: 1,
+                        explanation: "Activation functions (like ReLU, Sigmoid) add non-linearity, allowing networks to learn complex patterns."
+                    },
+                    {
+                        type: "mcq",
+                        text: "What is the purpose of hidden layers?",
+                        options: [
+                            "A) Store data",
+                            "B) Process and transform inputs into meaningful representations",
+                            "C) Output predictions",
+                            "D) Collect input data"
+                        ],
+                        correct: 1,
+                        explanation: "Hidden layers learn features and patterns from the input data."
+                    },
+                    {
+                        type: "code",
+                        text: "Complete this neural network code:",
+                        code: `import tensorflow as tf\n\nmodel = tf.keras.Sequential([\n    tf.keras.layers.Dense(128, activation='___', input_shape=(784,)),\n    tf.keras.layers.Dense(10, activation='softmax')\n])`,
+                        blanks: ["relu"],
+                        correct: "relu",
+                        explanation: "ReLU (Rectified Linear Unit) is the most common activation function for hidden layers."
+                    }
+                ],
+                passingScore: 70
+            }
+        };
+
+        let currentModule = "module1";
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let quizStarted = false;
+
+        function loadPoints() {
+            const points = localStorage.getItem('mindml_points') || 350;
+            document.getElementById('pointsDisplay').textContent = points;
+            
+            const quizzesPassed = localStorage.getItem('quizzes_passed') || 0;
+            document.getElementById('quizzesPassed').textContent = quizzesPassed;
+            
+            let totalPoints = parseInt(points);
+            document.getElementById('totalPoints').textContent = totalPoints;
+        }
+
+        function renderModuleSelector() {
+            const selector = document.getElementById('moduleSelector');
+            selector.innerHTML = Object.keys(quizzes).map(key => `
+                <button class="module-btn ${currentModule === key ? 'active' : ''}" onclick="selectModule('${key}')">
+                    ${quizzes[key].name}
+                </button>
+            `).join('');
+        }
+
+        function selectModule(module) {
+            currentModule = module;
+            quizStarted = false;
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            renderModuleSelector();
+            startQuiz();
+        }
+
+        function startQuiz() {
+            quizStarted = true;
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            renderQuestion();
+            document.getElementById('resultsContainer').classList.remove('show');
+        }
+
+        function renderQuestion() {
+            const quiz = quizzes[currentModule];
+            const question = quiz.questions[currentQuestionIndex];
+            const container = document.getElementById('quizContainer');
+            
+            let optionsHtml = '';
+            if (question.type === 'mcq') {
+                optionsHtml = `
+                    <div class="options-list">
+                        ${question.options.map((opt, idx) => `
+                            <div class="option ${userAnswers[currentQuestionIndex] === idx ? 'selected' : ''}" onclick="selectAnswer(${idx})">
+                                <div class="option-letter">${String.fromCharCode(65+idx)}</div>
+                                <div>${opt}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                const currentAnswer = userAnswers[currentQuestionIndex] || '';
+                optionsHtml = `
+                    <div class="code-editor">
+                        <pre>${escapeHtml(question.code.split('___')[0])}<span style="background: #ffd70030; padding: 2px 4px;">______</span>${escapeHtml(question.code.split('___')[1] || '')}</pre>
+                    </div>
+                    <textarea id="codeAnswer" placeholder="Type your answer here..." rows="4">${currentAnswer}</textarea>
+                `;
+            }
+            
+            container.innerHTML = `
+                <div class="quiz-card active">
+                    <div class="question-counter">
+                        Question ${currentQuestionIndex + 1} of ${quiz.questions.length}
+                    </div>
+                    <div class="question-text">${question.text}</div>
+                    ${optionsHtml}
+                    <div id="feedback" class="feedback"></div>
+                    <div class="quiz-nav">
+                        <button class="nav-btn" onclick="prevQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>← Previous</button>
+                        ${currentQuestionIndex === quiz.questions.length - 1 ? 
+                            `<button class="nav-btn submit-btn" onclick="submitQuiz()">Submit Quiz ✓</button>` :
+                            `<button class="nav-btn" onclick="nextQuestion()">Next →</button>`
+                        }
+                    </div>
+                </div>
+            `;
+            
+            if (question.type === 'code') {
+                const textarea = document.getElementById('codeAnswer');
+                if (textarea) {
+                    textarea.addEventListener('input', (e) => {
+                        userAnswers[currentQuestionIndex] = e.target.value;
+                    });
+                }
+            }
+        }
+        
+        function escapeHtml(text) {
+            return text.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function selectAnswer(index) {
+            userAnswers[currentQuestionIndex] = index;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizzes[currentModule].questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function submitQuiz() {
+            const quiz = quizzes[currentModule];
+            let score = 0;
+            let results = [];
+            
+            for (let i = 0; i < quiz.questions.length; i++) {
+                const question = quiz.questions[i];
+                const userAnswer = userAnswers[i];
+                let isCorrect = false;
+                
+                if (question.type === 'mcq') {
+                    isCorrect = (userAnswer === question.correct);
+                } else {
+                    isCorrect = (userAnswer && userAnswer.toLowerCase().trim() === question.correct.toLowerCase());
+                }
+                
+                if (isCorrect) {
+                    score++;
+                }
+                
+                results.push({
+                    question: question.text,
+                    userAnswer: userAnswer,
+                    correct: isCorrect,
+                    explanation: question.explanation
+                });
+            }
+            
+            const percentage = (score / quiz.questions.length) * 100;
+            const passed = percentage >= quiz.passingScore;
+            
+            // Calculate points earned
+            let pointsEarned = 0;
+            if (passed) {
+                pointsEarned = Math.floor(percentage);
+                let currentPoints = parseInt(localStorage.getItem('mindml_points') || 350);
+                currentPoints += pointsEarned;
+                localStorage.setItem('mindml_points', currentPoints);
+                
+                let quizzesPassed = parseInt(localStorage.getItem('quizzes_passed') || 0);
+                quizzesPassed++;
+                localStorage.setItem('quizzes_passed', quizzesPassed);
+            }
+            
+            showResults(percentage, passed, pointsEarned, results);
+        }
+
+        function showResults(percentage, passed, pointsEarned, results) {
+            const container = document.getElementById('quizContainer');
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            container.innerHTML = '';
+            resultsContainer.innerHTML = `
+                <div class="results-card show">
+                    <h2>${passed ? '🎉 Congratulations!' : '📚 Keep Learning!'}</h2>
+                    <div class="score-circle">
+                        <div class="final-score">${Math.round(percentage)}%</div>
+                    </div>
+                    <p>You scored ${Math.round(percentage)}%</p>
+                    ${passed ? `<p><i class="fas fa-star"></i> You earned ${pointsEarned} points!</p>` : `<p>You need ${quizzes[currentModule].passingScore}% to pass. Try again!</p>`}
+                    
+                    <div style="text-align: left; margin-top: 2rem;">
+                        <h3>Question Review:</h3>
+                        ${results.map((r, idx) => `
+                            <div style="padding: 1rem; margin: 0.5rem 0; background: ${r.correct ? '#d1fae5' : '#fee2e2'}; border-radius: 12px;">
+                                <strong>Q${idx + 1}: ${r.question}</strong>
+                                <div>${r.correct ? '✅ Correct!' : '❌ Incorrect'}</div>
+                                <div style="font-size: 0.875rem; margin-top: 0.5rem;">💡 ${r.explanation}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <button class="restart-btn" onclick="selectModule('${currentModule}')">
+                        ${passed ? 'Try Another Quiz →' : 'Try Again →'}
+                    </button>
+                </div>
+            `;
+            resultsContainer.classList.add('show');
+            
+            loadPoints();
+        }
+
+        // Initialize
+        loadPoints();
+        renderModuleSelector();
+        startQuiz();
+    </script>
+</body>
+</html>

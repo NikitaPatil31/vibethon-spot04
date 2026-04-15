@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code - MindML</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- 🔥 NAVBAR -->
+<nav>
+  <span class="logo" onclick="goTo('dashboard')">MindML</span>
+
+  <div class="nav-links">
+    <button class="nav-link" onclick="goTo('dashboard')">Dashboard</button>
+    <button class="nav-link" onclick="goTo('modules')">Modules</button>
+    <button class="nav-link active" onclick="goTo('code')">Code</button>
+    <button class="nav-link" onclick="goTo('quiz')">Quizzes</button>
+    <button class="nav-link" onclick="goTo('game')">Games</button>
+    <button class="nav-link" onclick="goTo('leaderboard')">Leaderboard</button>
+  </div>
+
+  <div class="nav-right">
+    <span class="pts">⚡ 350 pts</span>
+    <div class="avatar" onclick="goTo('profile')">N</div>
+  </div>
+</nav>
+
+<!-- 💻 CODE SECTION -->
+<div class="code-panel">
+
+  <!-- HEADER -->
+  <div class="code-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:16px">Python Playground</h2>
+      <p style="font-size:12px;color:var(--muted)">Linear Regression Example</p>
+    </div>
+
+    <button class="run-btn" onclick="runCode()">▶ Run</button>
+  </div>
+
+  <!-- CODE EDITOR -->
+  <div id="codeArea" class="code-editor" contenteditable="true">
+import numpy as np
+
+# Linear Regression Example
+x = [1,2,3,4,5]
+y = [2,4,6,8,10]
+
+print("Training model...")
+print("Done!")
+  </div>
+
+  <!-- OUTPUT -->
+  <div id="codeOutput" class="output-box" style="color:var(--muted)">
+Click ▶ Run to execute...
+  </div>
+
+</div>
+
+<!-- 📌 CHALLENGES -->
+<div style="padding:20px">
+  <h3 style="margin-bottom:10px">Coding Challenges</h3>
+
+  <div class="module-card" onclick="loadChallenge('lr')">
+    <div class="module-name">Linear Regression</div>
+  </div>
+
+  <div class="module-card" onclick="loadChallenge('dt')">
+    <div class="module-name">Decision Tree</div>
+  </div>
+
+  <div class="module-card" onclick="loadChallenge('nn')">
+    <div class="module-name">Neural Network</div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+/* OPTIONAL: Load different code */
+function loadChallenge(type){
+  let code = "";
+
+  if(type === "lr"){
+    code = `# Linear Regression
+print("Implement Linear Regression here")`;
+  }
+
+  if(type === "dt"){
+    code = `# Decision Tree
+print("Build Decision Tree")`;
+  }
+
+  if(type === "nn"){
+    code = `# Neural Network
+print("Forward pass")`;
+  }
+
+  document.getElementById("codeArea").innerText = code;
+  document.getElementById("codeOutput").innerText = "Click ▶ Run to execute...";
+}
+</script>
+
+</body>
+</html>

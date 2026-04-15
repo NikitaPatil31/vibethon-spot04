@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Tree Game - MindML</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .game-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .game-area {
+            padding: 2rem;
+        }
+
+        /* Tree Visualization */
+        .tree-container {
+            background: #f9fafb;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .tree-node {
+            display: inline-block;
+            margin: 0.5rem;
+        }
+
+        .node-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .node-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .node-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .node-question {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .node-gini {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .children-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .children-container::before {
+            content: '';
+            position: absolute;
+            top: -1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 1rem;
+            background: #e5e7eb;
+        }
+
+        .child {
+            position: relative;
+        }
+
+        /* Question Panel */
+        .question-panel {
+            background: linear-gradient(135deg, #fef3c7, #fed7aa);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .question {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .option-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f3f4f6;
+        }
+
+        /* Score Panel */
+        .score-panel {
+            background: #f3f4f6;
+            border-radius: 20px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .feedback.success {
+            background: #d1fae5;
+            color: #065f46;
+            display: block;
+        }
+
+        .feedback.error {
+            background: #fee2e2;
+            color: #991b1b;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1><i class="fas fa-tree"></i> Decision Tree Game</h1>
+            <p>Learn how decision trees make choices by splitting data!</p>
+            <div class="game-stats">
+                <div class="stat"><i class="fas fa-star"></i> Score: <span id="score">0</span></div>
+                <div class="stat"><i class="fas fa-question-circle"></i> Level: <span id="level">1</span>/5</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <!-- Tree Visualization -->
+            <div class="tree-container" id="treeContainer">
+                <div class="tree-node">
+                    <div class="node-card" id="rootNode">
+                        <div class="node-question">🌳 Decision Tree</div>
+                        <div class="node-gini">Gini: 0.48</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Panel -->
+            <div class="question-panel" id="questionPanel">
+                <div class="question" id="question">Which feature gives the best split?</div>
+                <div class="options" id="options">
+                    <button class="option-btn" onclick="checkAnswer('feature1')">🌡️ Temperature</button>
+                    <button class="option-btn" onclick="checkAnswer('feature2')">💧 Humidity</button>
+                    <button class="option-btn" onclick="checkAnswer('feature3')">💨 Wind Speed</button>
+                </div>
+            </div>
+
+            <!-- Feedback -->
+            <div id="feedback" class="feedback"></div>
+
+            <!-- Score Panel -->
+            <div class="score-panel">
+                <div>
+                    <i class="fas fa-lightbulb"></i> <strong>Gini Impurity:</strong> Lower is better! (0 = pure split)
+                </div>
+                <div>
+                    <span class="score"><span id="totalScore">0</span> points</span>
+                    <button class="reset-btn" onclick="resetGame()"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let currentLevel = 1;
+        let currentNode = null;
+
+        const levels = [
+            {
+                question: "Which feature gives the best split for predicting if someone will play tennis?",
+                features: [
+                    { name: "🌡️ Temperature", gini: 0.42, isBest: false, explanation: "Temperature gives a moderate split, but not the best." },
+                    { name: "💧 Humidity", gini: 0.38, isBest: true, explanation: "Humidity provides the purest split! Lower gini = better separation." },
+                    { name: "💨 Wind Speed", gini: 0.45, isBest: false, explanation: "Wind speed creates the most mixed groups." }
+                ],
+                points: 20
+            },
+            {
+                question: "For classifying fruits, which split best separates apples from oranges?",
+                features: [
+                    { name: "🍎 Color", gini: 0.32, isBest: true, explanation: "Color perfectly separates red apples from orange oranges!" },
+                    { name: "📏 Size", gini: 0.48, isBest: false, explanation: "Sizes overlap too much between fruits." },
+                    { name: "⚖️ Weight", gini: 0.44, isBest: false, explanation: "Weight ranges overlap significantly." }
+                ],
+                points: 20
+            },
+            {
+                question: "Which feature best predicts customer churn?",
+                features: [
+                    { name: "📞 Support Calls", gini: 0.28, isBest: true, explanation: "Support calls strongly predict churn behavior!" },
+                    { name: "💰 Account Age", gini: 0.41, isBest: false, explanation: "Account age has some correlation but weaker." },
+                    { name: "🌐 Usage Hours", gini: 0.39, isBest: false, explanation: "Usage patterns show some signal but not strongest." }
+                ],
+                points: 20
+            },
+            {
+                question: "For detecting spam emails, what's the best split?",
+                features: [
+                    { name: "📧 Contains 'FREE'", gini: 0.22, isBest: true, explanation: "The word 'FREE' is a very strong spam indicator!" },
+                    { name: "📏 Email Length", gini: 0.45, isBest: false, explanation: "Length alone doesn't identify spam well." },
+                    { name: "🔗 Link Count", gini: 0.35, isBest: false, explanation: "Links are somewhat indicative but not best." }
+                ],
+                points: 20
+            },
+            {
+                question: "Which feature best predicts if a loan will default?",
+                features: [
+                    { name: "💳 Credit Score", gini: 0.25, isBest: true, explanation: "Credit score is the strongest predictor of default risk!" },
+                    { name: "💰 Income", gini: 0.38, isBest: false, explanation: "Income helps but isn't as predictive." },
+                    { name: "🏠 Debt Ratio", gini: 0.32, isBest: false, explanation: "Debt ratio is good but credit score wins." }
+                ],
+                points: 20
+            }
+        ];
+
+        function loadLevel() {
+            if (currentLevel <= levels.length) {
+                const level = levels[currentLevel - 1];
+                document.getElementById('question').textContent = level.question;
+                document.getElementById('level').textContent = `${currentLevel}/${levels.length}`;
+                
+                const optionsHtml = level.features.map((feature, index) => 
+                    `<button class="option-btn" onclick="checkAnswer(${index})">${feature.name}<br><small>Gini: ${feature.gini}</small></button>`
+                ).join('');
+                document.getElementById('options').innerHTML = optionsHtml;
+            } else {
+                completeGame();
+            }
+        }
+
+        function checkAnswer(index) {
+            const level = levels[currentLevel - 1];
+            const selected = level.features[index];
+            const feedback = document.getElementById('feedback');
+            
+            if (selected.isBest) {
+                // Correct answer
+                currentScore += level.points;
+                document.getElementById('score').textContent = currentScore;
+                document.getElementById('totalScore').textContent = currentScore;
+                
+                feedback.className = 'feedback success';
+                feedback.innerHTML = `<i class="fas fa-check-circle"></i> Correct! ${selected.explanation} +${level.points} points!`;
+                
+                setTimeout(() => {
+                    feedback.className = 'feedback';
+                    currentLevel++;
+                    loadLevel();
+                    updateTreeVisualization();
+                }, 2000);
+            } else {
+                // Wrong answer
+                feedback.className = 'feedback error';
+                feedback.innerHTML = `<i class="fas fa-times-circle"></i> Not quite! ${selected.explanation} Try again!`;
+                
+                setTimeout(() => {
+                    feedback.className = 'feedback';
+                }, 2000);
+            }
+            
+            updateScoreStorage();
+        }
+
+        function updateTreeVisualization() {
+            const treeContainer = document.getElementById('treeContainer');
+            const progress = (currentLevel - 1) / levels.length * 100;
+            
+            treeContainer.innerHTML = `
+                <div class="tree-node">
+                    <div class="node-card">
+                        <div class="node-question">🎯 Level ${currentLevel - 1}/${levels.length}</div>
+                        <div class="node-gini">Progress: ${Math.round(progress)}%</div>
+                    </div>
+                </div>
+                <div class="children-container">
+                    <div class="child">
+                        <div class="node-card">
+                            <div class="node-question">✅ Correct Splits</div>
+                            <div class="node-gini">${currentLevel - 1} of ${levels.length}</div>
+                        </div>
+                    </div>
+                    <div class="child">
+                        <div class="node-card">
+                            <div class="node-question">🏆 Score</div>
+                            <div class="node-gini">${currentScore} points</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function completeGame() {
+            const bonus = currentLevel === levels.length + 1 ? 100 : 0;
+            currentScore += bonus;
+            
+            document.getElementById('questionPanel').innerHTML = `
+                <div class="question">🎉 Congratulations! 🎉</div>
+                <p>You've mastered decision tree splits!</p>
+                <p>Final Score: ${currentScore} points</p>
+                <button class="option-btn" onclick="resetGame()">Play Again</button>
+            `;
+            
+            updateScoreStorage();
+        }
+
+        function updateScoreStorage() {
+            let totalPoints = parseInt(localStorage.getItem('mindml_points') || 0);
+            totalPoints += currentScore;
+            localStorage.setItem('mindml_points', totalPoints);
+        }
+
+        function resetGame() {
+            currentScore = 0;
+            currentLevel = 1;
+            document.getElementById('score').textContent = 0;
+            document.getElementById('totalScore').textContent = 0;
+            loadLevel();
+            updateTreeVisualization();
+            
+            document.getElementById('questionPanel').innerHTML = `
+                <div class="question" id="question"></div>
+                <div class="options" id="options"></div>
+            `;
+            loadLevel();
+        }
+
+        // Initialize game
+        loadLevel();
+        updateTreeVisualization();
+    </script>
+</body>
+</html>

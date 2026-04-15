@@ -3,146 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decision Tree Game - MindML</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Games - MindML</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links button {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #4b5563;
+            transition: color 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .nav-links button:hover,
+        .nav-links button.active {
+            color: #667eea;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pts {
+            background: #fef3c7;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #d97706;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Game Cards Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .game-card h3 {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-card p {
+            color: #6b7280;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .game-tags {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #f3f4f6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #4b5563;
+        }
+
+        .play-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">
+            <div class="logo" onclick="goTo('dashboard')">
                 <div class="logo-icon">M</div>
                 <span class="logo-text">MindML</span>
             </div>
             <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="modules.html">Modules</a>
-                <a href="code.html">Code</a>
-                <a href="game.html" class="active">Game</a>
-                <a href="leaderboard.html">Leaderboard</a>
+                <button onclick="goTo('dashboard')">Dashboard</button>
+                <button onclick="goTo('modules')">Modules</button>
+                <button onclick="goTo('code')">Code</button>
+                <button onclick="goTo('quiz')">Quizzes</button>
+                <button class="active" onclick="goTo('games')">Games</button>
+                <button onclick="goTo('leaderboard')">Leaderboard</button>
             </div>
-            <div class="nav-user">
-                <div class="points-badge"><i class="fas fa-trophy"></i><span id="pointsDisplay">250</span></div>
-                <div class="streak-badge"><i class="fas fa-fire"></i><span id="streakDisplay">3</span></div>
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nikita" alt="Avatar" class="user-avatar">
+            <div class="nav-right">
+                <span class="pts">⚡ <span id="pointsDisplay">350</span> pts</span>
+                <div class="avatar">N</div>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        <div class="game-container">
-            <h1><i class="fas fa-gamepad"></i> Decision Tree Game</h1>
-            <p>Learn how Decision Trees work by making choices!</p>
-            
-            <div class="decision-tree-game" id="gameArea">
-                <div class="question-card">
-                    <h2 id="questionText">Is the animal warm-blooded?</h2>
-                    <div class="options-grid" id="optionsGrid">
-                        <button class="option-btn" onclick="makeChoice('warm')">✓ Yes, warm-blooded</button>
-                        <button class="option-btn" onclick="makeChoice('cold')">✗ No, cold-blooded</button>
-                    </div>
+        <div class="page-header">
+            <h1><i class="fas fa-gamepad"></i> AIML Interactive Games</h1>
+            <p>Learn AI/ML concepts by playing fun and engaging games!</p>
+        </div>
+
+        <div class="games-grid">
+            <!-- Game 1: Decision Tree Game -->
+            <div class="game-card" onclick="playGame('decision-tree')">
+                <div class="game-icon">
+                    <i class="fas fa-tree"></i>
                 </div>
+                <h3>🌳 Decision Tree Game</h3>
+                <p>Learn how decision trees make choices by splitting data! Choose the best features to create pure splits.</p>
+                <div class="game-tags">
+                    <span class="tag">Beginner</span>
+                    <span class="tag">Decision Trees</span>
+                    <span class="tag">Classification</span>
+                </div>
+                <button class="play-btn">Play Now →</button>
             </div>
-            
-            <div class="game-score">
-                <i class="fas fa-star"></i> Score: <span id="gameScore">0</span>
+
+            <!-- Game 2: Classification Game -->
+            <div class="game-card" onclick="playGame('classification')">
+                <div class="game-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h3>📊 Classification Game</h3>
+                <p>Sort objects into categories! Learn how ML classifies items based on their features.</p>
+                <div class="game-tags">
+                    <span class="tag">Beginner</span>
+                    <span class="tag">Classification</span>
+                    <span class="tag">Supervised Learning</span>
+                </div>
+                <button class="play-btn">Play Now →</button>
             </div>
-            
-            <button class="btn-primary" onclick="resetGame()" style="margin-top: 2rem;">
-                <i class="fas fa-redo"></i> Play Again
-            </button>
+
+            <!-- Game 3: Neural Network Game -->
+            <div class="game-card" onclick="playGame('neural-network')">
+                <div class="game-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>🧠 Neural Network Game</h3>
+                <p>Train a neural network to recognize patterns! Adjust weights and watch it learn.</p>
+                <div class="game-tags">
+                    <span class="tag">Intermediate</span>
+                    <span class="tag">Neural Networks</span>
+                    <span class="tag">Deep Learning</span>
+                </div>
+                <button class="play-btn">Play Now →</button>
+            </div>
         </div>
     </div>
 
+    <footer class="footer">
+        <p>🎮 Play, Learn, and Master AIML Concepts! 🚀</p>
+    </footer>
+
     <script>
-        let gameScore = 0;
-        
-        const questions = {
-            start: {
-                text: "Is the animal warm-blooded?",
-                warm: "mammal",
-                cold: "reptile"
-            },
-            mammal: {
-                text: "Does it have fur?",
-                yes: "fur",
-                no: "feathers"
-            },
-            reptile: {
-                text: "Does it have scales?",
-                yes: "snake",
-                no: "frog"
-            },
-            fur: {
-                text: "It's a Bear! 🐻",
-                result: true,
-                points: 10
-            },
-            feathers: {
-                text: "It's an Eagle! 🦅",
-                result: true,
-                points: 10
-            },
-            snake: {
-                text: "It's a Snake! 🐍",
-                result: true,
-                points: 10
-            },
-            frog: {
-                text: "It's a Frog! 🐸",
-                result: true,
-                points: 10
-            }
-        };
-        
-        let currentNode = "start";
-        
-        function makeChoice(choice) {
-            const next = questions[currentNode][choice];
-            if (next && questions[next] && !questions[next].result) {
-                currentNode = next;
-                updateGame();
-            } else if (next && questions[next] && questions[next].result) {
-                // Game complete for this path
-                gameScore += questions[next].points;
-                document.getElementById('gameScore').textContent = gameScore;
-                showResult(next);
-            }
-        }
-        
-        function updateGame() {
-            const q = questions[currentNode];
-            if (q && !q.result) {
-                document.getElementById('questionText').textContent = q.text;
-                const optionsHtml = Object.keys(q)
-                    .filter(key => key !== 'text')
-                    .map(key => `<button class="option-btn" onclick="makeChoice('${key}')">${key.toUpperCase()}: ${q[key]}</button>`)
-                    .join('');
-                document.getElementById('optionsGrid').innerHTML = optionsHtml;
-            }
-        }
-        
-        function showResult(resultKey) {
-            const result = questions[resultKey];
-            document.getElementById('questionText').innerHTML = result.text + '<br><span style="font-size: 1rem;">🎉 +' + result.points + ' points!</span>';
-            document.getElementById('optionsGrid').innerHTML = '<button class="btn-primary" onclick="resetGame()">Play Again</button>';
-            
-            // Update points in localStorage
-            let points = localStorage.getItem('mindml_points') || 250;
-            points = parseInt(points) + result.points;
-            localStorage.setItem('mindml_points', points);
+        // Load points from localStorage
+        function loadPoints() {
+            const points = localStorage.getItem('mindml_points') || 350;
             document.getElementById('pointsDisplay').textContent = points;
         }
-        
-        function resetGame() {
-            currentNode = "start";
-            updateGame();
+
+        // Navigation function
+        function goTo(page) {
+            const pages = {
+                'dashboard': 'dashboard.html',
+                'modules': 'modules.html',
+                'code': 'code.html',
+                'quiz': 'quiz.html',
+                'games': 'games.html',
+                'leaderboard': 'leaderboard.html'
+            };
+            window.location.href = pages[page] || '#';
         }
-        
+
+        // Play game function - redirects to individual games in the games folder
+        function playGame(game) {
+            const gamePaths = {
+                'decision-tree': 'games/decision-tree-game.html',
+                'classification': 'games/classification-game.html',
+                'neural-network': 'games/neural-network-game.html'
+            };
+            
+            const gameNames = {
+                'decision-tree': 'Decision Tree Game 🌳',
+                'classification': 'Classification Game 📊',
+                'neural-network': 'Neural Network Game 🧠'
+            };
+            
+            // Show loading toast
+            showToast(`Loading ${gameNames[game]}... 🎮`);
+            
+            // Redirect after short delay
+            setTimeout(() => {
+                window.location.href = gamePaths[game];
+            }, 500);
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.bottom = '20px';
+            toast.style.right = '20px';
+            toast.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            toast.style.color = 'white';
+            toast.style.padding = '12px 24px';
+            toast.style.borderRadius = '10px';
+            toast.style.zIndex = '9999';
+            toast.style.animation = 'slideIn 0.3s ease';
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        // Add animation style
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
         // Initialize
-        updateGame();
+        loadPoints();
     </script>
 </body>
 </html>
