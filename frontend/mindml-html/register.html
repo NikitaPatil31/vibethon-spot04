@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - MindML</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -20px) scale(1.1); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .register-card {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 2.5rem;
+            transition: transform 0.3s;
+        }
+
+        .register-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            transition: color 0.3s;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group input:focus + i {
+            color: #667eea;
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background 0.3s;
+        }
+
+        .terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .terms input {
+            margin-top: 0.2rem;
+        }
+
+        .terms label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .terms a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.875rem;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 3px solid #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 3px solid #10b981;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .register-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="register-card">
+            <div class="logo">
+                <div class="logo-icon">M</div>
+                <div class="logo-text">MindML</div>
+            </div>
+
+            <h2>Create Account</h2>
+            <p class="subtitle">Start your AI/ML learning journey today</p>
+
+            <div id="alert" class="alert"></div>
+
+            <form id="registerForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="fullname" placeholder="Full name" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="Email address" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <i class="fas fa-eye password-toggle" id="togglePassword" style="left: auto; right: 1rem; cursor: pointer;"></i>
+                </div>
+                <div class="password-strength" id="passwordStrength"></div>
+
+                <div class="input-group">
+                    <i class="fas fa-check-circle"></i>
+                    <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                </div>
+
+                <div class="terms">
+                    <input type="checkbox" id="terms" required>
+                    <label>
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="register-btn" id="registerBtn">
+                    Create Account
+                    <span class="loading" style="display: none;"></span>
+                </button>
+            </form>
+
+            <div class="login-link">
+                Already have an account? <a href="login.html">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid white;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+        }
+    </style>
+
+    <script>
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Password strength meter
+        const passwordField = document.getElementById('password');
+        const strengthDiv = document.getElementById('passwordStrength');
+
+        passwordField.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            let message = '';
+
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+            const strengthMap = {
+                0: { text: 'Very Weak', color: '#dc2626', width: '20%' },
+                1: { text: 'Weak', color: '#f97316', width: '40%' },
+                2: { text: 'Fair', color: '#eab308', width: '60%' },
+                3: { text: 'Good', color: '#84cc16', width: '80%' },
+                4: { text: 'Strong', color: '#10b981', width: '100%' },
+                5: { text: 'Very Strong', color: '#059669', width: '100%' }
+            };
+
+            const level = Math.min(strength, 5);
+            strengthDiv.innerHTML = `
+                <div>Password strength: <strong style="color: ${strengthMap[level].color}">${strengthMap[level].text}</strong></div>
+                <div class="strength-bar">
+                    <div class="strength-fill" style="width: ${strengthMap[level].width}; background: ${strengthMap[level].color}"></div>
+                </div>
+            `;
+        });
+
+        // Form submission
+        const registerForm = document.getElementById('registerForm');
+        const registerBtn = document.getElementById('registerBtn');
+        const alertDiv = document.getElementById('alert');
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+
+            // Validate
+            if (!fullname || !email || !password || !confirmPassword) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                showAlert('Please enter a valid email address', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match', 'error');
+                return;
+            }
+
+            if (!terms) {
+                showAlert('Please accept the Terms of Service', 'error');
+                return;
+            }
+
+            // Show loading
+            registerBtn.disabled = true;
+            registerBtn.style.opacity = '0.7';
+            registerBtn.innerHTML = 'Creating Account <span class="loading"></span>';
+
+            // Simulate API call
+            setTimeout(() => {
+                // Check if user already exists
+                const existingUser = localStorage.getItem(`user_${email}`);
+                if (existingUser) {
+                    showAlert('Email already registered. Please login instead.', 'error');
+                    resetButton();
+                    return;
+                }
+
+                // Save user data
+                const userData = {
+                    name: fullname,
+                    email: email,
+                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+                    registeredAt: new Date().toISOString(),
+                    points: 0,
+                    streak: 0
+                };
+
+                localStorage.setItem(`user_${email}`, JSON.stringify(userData));
+                localStorage.setItem('mindml_user', JSON.stringify(userData));
+                localStorage.setItem('mindml_points', '0');
+                localStorage.setItem('mindml_streak', '0');
+
+                showAlert('Account created successfully! Redirecting...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+                
+            }, 1500);
+        });
+
+        function showAlert(message, type) {
+            alertDiv.className = `alert ${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i> ${message}`;
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+                alertDiv.className = 'alert';
+            }, 3000);
+        }
+
+        function resetButton() {
+            registerBtn.disabled = false;
+            registerBtn.style.opacity = '1';
+            registerBtn.innerHTML = 'Create Account';
+        }
+
+        // Check if already logged in
+        window.addEventListener('load', () => {
+            const user = localStorage.getItem('mindml_user');
+            if (user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>
