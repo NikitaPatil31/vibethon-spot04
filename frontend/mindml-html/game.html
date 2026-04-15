@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Tree Game - MindML</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">M</div>
+                <span class="logo-text">MindML</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="modules.html">Modules</a>
+                <a href="code.html">Code</a>
+                <a href="game.html" class="active">Game</a>
+                <a href="leaderboard.html">Leaderboard</a>
+            </div>
+            <div class="nav-user">
+                <div class="points-badge"><i class="fas fa-trophy"></i><span id="pointsDisplay">250</span></div>
+                <div class="streak-badge"><i class="fas fa-fire"></i><span id="streakDisplay">3</span></div>
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nikita" alt="Avatar" class="user-avatar">
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="game-container">
+            <h1><i class="fas fa-gamepad"></i> Decision Tree Game</h1>
+            <p>Learn how Decision Trees work by making choices!</p>
+            
+            <div class="decision-tree-game" id="gameArea">
+                <div class="question-card">
+                    <h2 id="questionText">Is the animal warm-blooded?</h2>
+                    <div class="options-grid" id="optionsGrid">
+                        <button class="option-btn" onclick="makeChoice('warm')">✓ Yes, warm-blooded</button>
+                        <button class="option-btn" onclick="makeChoice('cold')">✗ No, cold-blooded</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="game-score">
+                <i class="fas fa-star"></i> Score: <span id="gameScore">0</span>
+            </div>
+            
+            <button class="btn-primary" onclick="resetGame()" style="margin-top: 2rem;">
+                <i class="fas fa-redo"></i> Play Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let gameScore = 0;
+        
+        const questions = {
+            start: {
+                text: "Is the animal warm-blooded?",
+                warm: "mammal",
+                cold: "reptile"
+            },
+            mammal: {
+                text: "Does it have fur?",
+                yes: "fur",
+                no: "feathers"
+            },
+            reptile: {
+                text: "Does it have scales?",
+                yes: "snake",
+                no: "frog"
+            },
+            fur: {
+                text: "It's a Bear! 🐻",
+                result: true,
+                points: 10
+            },
+            feathers: {
+                text: "It's an Eagle! 🦅",
+                result: true,
+                points: 10
+            },
+            snake: {
+                text: "It's a Snake! 🐍",
+                result: true,
+                points: 10
+            },
+            frog: {
+                text: "It's a Frog! 🐸",
+                result: true,
+                points: 10
+            }
+        };
+        
+        let currentNode = "start";
+        
+        function makeChoice(choice) {
+            const next = questions[currentNode][choice];
+            if (next && questions[next] && !questions[next].result) {
+                currentNode = next;
+                updateGame();
+            } else if (next && questions[next] && questions[next].result) {
+                // Game complete for this path
+                gameScore += questions[next].points;
+                document.getElementById('gameScore').textContent = gameScore;
+                showResult(next);
+            }
+        }
+        
+        function updateGame() {
+            const q = questions[currentNode];
+            if (q && !q.result) {
+                document.getElementById('questionText').textContent = q.text;
+                const optionsHtml = Object.keys(q)
+                    .filter(key => key !== 'text')
+                    .map(key => `<button class="option-btn" onclick="makeChoice('${key}')">${key.toUpperCase()}: ${q[key]}</button>`)
+                    .join('');
+                document.getElementById('optionsGrid').innerHTML = optionsHtml;
+            }
+        }
+        
+        function showResult(resultKey) {
+            const result = questions[resultKey];
+            document.getElementById('questionText').innerHTML = result.text + '<br><span style="font-size: 1rem;">🎉 +' + result.points + ' points!</span>';
+            document.getElementById('optionsGrid').innerHTML = '<button class="btn-primary" onclick="resetGame()">Play Again</button>';
+            
+            // Update points in localStorage
+            let points = localStorage.getItem('mindml_points') || 250;
+            points = parseInt(points) + result.points;
+            localStorage.setItem('mindml_points', points);
+            document.getElementById('pointsDisplay').textContent = points;
+        }
+        
+        function resetGame() {
+            currentNode = "start";
+            updateGame();
+        }
+        
+        // Initialize
+        updateGame();
+    </script>
+</body>
+</html>

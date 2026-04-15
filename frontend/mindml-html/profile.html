@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - MindML</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">M</div>
+                <span class="logo-text">MindML</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="modules.html">Modules</a>
+                <a href="code.html">Code</a>
+                <a href="game.html">Game</a>
+                <a href="leaderboard.html">Leaderboard</a>
+            </div>
+            <div class="nav-user">
+                <div class="points-badge"><i class="fas fa-trophy"></i><span id="pointsDisplay">250</span></div>
+                <div class="streak-badge"><i class="fas fa-fire"></i><span id="streakDisplay">3</span></div>
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nikita" alt="Avatar" class="user-avatar">
+            </div>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=NikitaPatil31" alt="Avatar" class="profile-avatar">
+            <h1 class="profile-name">Nikita Patil</h1>
+            <p class="profile-email">nikita.patil@example.com</p>
+            <p>Member since January 2024</p>
+        </div>
+
+        <div class="profile-stats">
+            <div class="profile-stat">
+                <div class="profile-stat-value">250</div>
+                <div class="profile-stat-label">Total Points</div>
+            </div>
+            <div class="profile-stat">
+                <div class="profile-stat-value">3</div>
+                <div class="profile-stat-label">Current Streak</div>
+            </div>
+            <div class="profile-stat">
+                <div class="profile-stat-value">7</div>
+                <div class="profile-stat-label">Best Streak</div>
+            </div>
+        </div>
+
+        <div class="badges-section">
+            <h2><i class="fas fa-award"></i> Achievements & Badges</h2>
+            <div class="badges-grid">
+                <div class="badge-card earned">
+                    <div class="badge-icon">🌟</div>
+                    <div class="badge-title">First Module</div>
+                    <div class="badge-date">Earned: Jan 15, 2024</div>
+                </div>
+                <div class="badge-card earned">
+                    <div class="badge-icon">🔥</div>
+                    <div class="badge-title">3 Day Streak</div>
+                    <div class="badge-date">Earned: Jan 18, 2024</div>
+                </div>
+                <div class="badge-card earned">
+                    <div class="badge-icon">🎯</div>
+                    <div class="badge-title">100 Points</div>
+                    <div class="badge-date">Earned: Jan 20, 2024</div>
+                </div>
+                <div class="badge-card">
+                    <div class="badge-icon">🏆</div>
+                    <div class="badge-title">5 Modules</div>
+                    <div class="badge-date">Locked</div>
+                </div>
+                <div class="badge-card">
+                    <div class="badge-icon">⚡</div>
+                    <div class="badge-title">10 Day Streak</div>
+                    <div class="badge-date">Locked</div>
+                </div>
+                <div class="badge-card">
+                    <div class="badge-icon">💯</div>
+                    <div class="badge-title">Perfect Score</div>
+                    <div class="badge-date">Locked</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h2><i class="fas fa-cog"></i> Account Settings</h2>
+            <div class="setting-item">
+                <div>
+                    <strong>Email Notifications</strong>
+                    <p style="color: #6b7280; font-size: 0.875rem;">Receive updates about new modules and challenges</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <strong>Daily Reminders</strong>
+                    <p style="color: #6b7280; font-size: 0.875rem;">Get daily learning reminders</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <strong>Public Profile</strong>
+                    <p style="color: #6b7280; font-size: 0.875rem;">Show your progress on leaderboard</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+
+    <script src="script.js"></script>
+</body>
+</html>
